@@ -4,12 +4,17 @@ const fs = require('fs');
 const path = require('path');
 
 const gulp = require('gulp');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server.js');
 const rimraf = require('rimraf');
+
+const App = require('./src/components/App.js').App;
 
 gulp.task('default', [
   'copy:css',
   'copy:html',
-  'embed:css'
+  'embed:css',
+  'embed:jsx'
 ]);
 
 gulp.task('copy:html', () => {
@@ -39,4 +44,16 @@ gulp.task('embed:css', ['copy:css', 'copy:html'], () => {
   );
   fs.writeFileSync(htmlPath, html, 'utf8');
   fs.unlinkSync(cssPath);
+});
+
+gulp.task('embed:jsx', ['copy:html'], () => {
+  const htmlPath = path.join(__dirname, 'index.html');
+
+  let html = fs.readFileSync(htmlPath, 'utf8');
+
+  html = html.replace(
+    '<main></main>',
+    ReactDOMServer.renderToString(<App />)
+  );
+  fs.writeFileSync(htmlPath, html, 'utf8');
 });
