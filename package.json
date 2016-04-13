@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "react": "15.0.1",
-    "react-dom": "15.0.1"
+    "react-dom": "15.0.1",
+    "webfontloader": "1.6.24"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
