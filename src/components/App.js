@@ -1,11 +1,12 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
+
+import '../styles.css';
+import classes from './App.css';
 
 const App = () => (
-  <main>
-    <p className='message'>Coming soon...</p>
-  </main>
+  <p className={classes.message}>Coming soon...</p>
 );
 
 module.exports = { App };
