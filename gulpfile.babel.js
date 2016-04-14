@@ -14,6 +14,7 @@ import ReactDOMServer from 'react-dom/server.js';
 import rimraf from 'rimraf';
 import source from 'vinyl-source-stream';
 import sourcemaps from 'gulp-sourcemaps';
+import through from 'through2';
 import uglify from 'gulp-uglify';
 
 const cssHash = (name, file, css) => {
@@ -35,13 +36,10 @@ cssModulesRequireHook(Object.assign({}, CSS_MODULES_CONFIG));
 
 gulp.task('default', [
   'browserify',
-  'copy:html',
-  'embed:css',
-  'embed:csp',
-  'embed:jsx'
+  'html'
 ]);
 
-gulp.task('browserify', ['clean:css', 'clean:js'], function () {
+gulp.task('browserify', ['clean:js'], function () {
   const b = browserify({
     basedir: './src',
     debug: true,
@@ -67,58 +65,56 @@ gulp.task('browserify', ['clean:css', 'clean:js'], function () {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('copy:html', () => {
-  return gulp.src('./src/index.html')
-    .pipe(gulp.dest('./'));
-});
-
-gulp.task('clean:css', (done) => {
-  rimraf('./styles.css', done);
-});
-
 gulp.task('clean:js', (done) => {
   rimraf('./index.js*', done);
 });
 
-gulp.task('embed:css', ['browserify', 'copy:html'], () => {
-  const htmlPath = path.join(__dirname, 'index.html');
-  const cssPath = path.join(__dirname, 'styles.css');
-
-  let html = fs.readFileSync(htmlPath, 'utf8');
-  const css = fs.readFileSync(cssPath, 'utf8');
-
-  html = html.replace(
-    '<link href="styles.css" rel="stylesheet" />',
-    `<style>${css}</style>`
-  );
-  fs.writeFileSync(htmlPath, html, 'utf8');
-  fs.unlinkSync(cssPath);
-});
-
-gulp.task('embed:csp', ['embed:css'], () => {
-  const htmlPath = path.join(__dirname, 'index.html');
+const embedCSP = () => through.obj((file, encoding, cb) => {
   const cspData = require('./src/csp.json');
   const csp = Object.keys(cspData).reduce((csp, directive) => {
     const sources = cspData[directive];
     return `${csp} ${directive} ${sources.join(' ')};`;
   }, '');
 
-  let html = fs.readFileSync(htmlPath, 'utf8');
+  let html = file.contents.toString(encoding);
   html = html.replace(
     '<meta http-equiv="Content-Security-Policy" content="" />',
     `<meta http-equiv="Content-Security-Policy" content="${csp}" />`
   );
-  fs.writeFileSync(htmlPath, html, 'utf8');
+  file.contents = Buffer.from(html, encoding);
+  cb(null, file);
 });
 
-gulp.task('embed:jsx', ['copy:html'], () => {
-  const App = require('./src/components/App.js').App;
-  const htmlPath = path.join(__dirname, 'index.html');
-  let html = fs.readFileSync(htmlPath, 'utf8');
+const embedCSS = () => through.obj((file, encoding, cb) => {
+  const cssPath = path.join(__dirname, 'styles.css');
+  const css = fs.readFileSync(cssPath, 'utf8');
 
+  let html = file.contents.toString(encoding);
+  html = html.replace(
+    '<link href="styles.css" rel="stylesheet" />',
+    `<style>${css}</style>`
+  );
+  file.contents = Buffer.from(html, encoding);
+  fs.unlinkSync(cssPath);
+  cb(null, file);
+});
+
+const embedJSX = () => through.obj((file, encoding, cb) => {
+  const App = require('./src/components/App.js').App;
+
+  let html = file.contents.toString(encoding);
   html = html.replace(
     '<main></main>',
     `<main>${ReactDOMServer.renderToString(<App />)}</main>`
   );
-  fs.writeFileSync(htmlPath, html, 'utf8');
+  file.contents = Buffer.from(html, encoding);
+  cb(null, file);
+});
+
+gulp.task('html', ['browserify'], () => {
+  return gulp.src('./src/index.html')
+    .pipe(embedCSS())
+    .pipe(embedCSP())
+    .pipe(embedJSX())
+    .pipe(gulp.dest('./'));
 });
