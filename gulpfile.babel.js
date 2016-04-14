@@ -37,6 +37,7 @@ gulp.task('default', [
   'browserify',
   'copy:html',
   'embed:css',
+  'embed:csp',
   'embed:jsx'
 ]);
 
@@ -92,6 +93,22 @@ gulp.task('embed:css', ['browserify', 'copy:html'], () => {
   );
   fs.writeFileSync(htmlPath, html, 'utf8');
   fs.unlinkSync(cssPath);
+});
+
+gulp.task('embed:csp', ['embed:css'], () => {
+  const htmlPath = path.join(__dirname, 'index.html');
+  const cspData = require('./src/csp.json');
+  const csp = Object.keys(cspData).reduce((csp, directive) => {
+    const sources = cspData[directive];
+    return `${csp} ${directive} ${sources.join(' ')};`;
+  }, '');
+
+  let html = fs.readFileSync(htmlPath, 'utf8');
+  html = html.replace(
+    '<meta http-equiv="Content-Security-Policy" content="" />',
+    `<meta http-equiv="Content-Security-Policy" content="${csp}" />`
+  );
+  fs.writeFileSync(htmlPath, html, 'utf8');
 });
 
 gulp.task('embed:jsx', ['copy:html'], () => {

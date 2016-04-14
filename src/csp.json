@@ -1,0 +1,8 @@
+{
+  "default-src": [ "'none'" ],
+  "child-src":  [ "'none'" ],
+  "font-src": [ "fonts.gstatic.com" ],
+  "form-action":  [ "'none'" ],
+  "script-src": [ "'self'" ],
+  "style-src": [ "'unsafe-inline'", "fonts.googleapis.com" ]
+}
