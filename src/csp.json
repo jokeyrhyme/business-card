@@ -1,6 +1,9 @@
 {
   "default-src": [ "'none'" ],
-  "child-src":  [ "'none'" ],
+  "base-uri": [ "'self'" ],
+  "block-all-mixed-content": [],
+  "child-src": [ "'none'" ],
+  "frame-ancestors ": [ "'none'" ],
   "font-src": [ "fonts.gstatic.com" ],
   "form-action":  [ "'none'" ],
   "script-src": [ "'self'" ],
