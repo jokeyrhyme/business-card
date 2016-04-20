@@ -9,6 +9,7 @@ import browserify from 'browserify';
 import cssModulesRequireHook from 'css-modules-require-hook';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
+import postcss from 'gulp-postcss';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server.js';
 import rimraf from 'rimraf';
@@ -69,6 +70,15 @@ gulp.task('clean:js', (done) => {
   rimraf('./index.js*', done);
 });
 
+gulp.task('css', ['browserify'], () => {
+  return gulp.src('./styles.css')
+    .pipe(postcss([
+      require('postcss-cssnext'),
+      require('cssnano')
+    ]))
+    .pipe(gulp.dest('./'));
+});
+
 const embedCSP = () => through.obj((file, encoding, cb) => {
   const cspData = require('./src/csp.json');
   const csp = Object.keys(cspData).reduce((csp, directive) => {
@@ -111,7 +121,7 @@ const embedJSX = () => through.obj((file, encoding, cb) => {
   cb(null, file);
 });
 
-gulp.task('html', ['browserify'], () => {
+gulp.task('html', ['browserify', 'css'], () => {
   return gulp.src('./src/index.html')
     .pipe(embedCSS())
     .pipe(embedCSP())
