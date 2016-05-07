@@ -6,6 +6,7 @@
     "url": "https://github.com/jokeyrhyme/business-card/issues"
   },
   "dependencies": {
+    "classnames": "2.2.5",
     "react": "15.0.2",
     "react-dom": "15.0.2",
     "webfontloader": "1.6.24"
