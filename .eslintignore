@@ -3,4 +3,4 @@ node_modules
 src/vendor
 
 # build output
-index.js
+/index.js

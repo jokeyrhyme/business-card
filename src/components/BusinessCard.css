@@ -3,12 +3,14 @@
   background-color: #fff;
   box-shadow: 0px 0px 10px #aaa;
   display: flex;
+  font-size: xx-large;
   justify-content: space-around;
 }
 
 @media (orientation: portrait) and (max-aspect-ratio: 2699/4280) {
   .self {
     height: calc(4280 / 2699 * 100vw);
+    font-size: 5vw;
     width: 100vw;
   }
 }
@@ -16,6 +18,7 @@
 @media (orientation: portrait) and (min-aspect-ratio: 2699/4280) {
   .self {
     height: 100vh;
+    font-size: calc(0.05 * 2699 / 4280 * 100vh);
     width: calc(2699 / 4280 * 100vh);
   }
 }
@@ -23,6 +26,7 @@
 @media (orientation: landscape) and (min-aspect-ratio: 4280/2699) {
   .self {
     height: 100vh;
+    font-size: calc(0.04 * 4280 / 2699 * 100vh);
     width: calc(4280 / 2699 * 100vh);
   }
 }
@@ -30,6 +34,7 @@
 @media (orientation: landscape) and (max-aspect-ratio: 4280/2699) {
   .self {
     height: calc(2699 / 4280 * 100vw);
+    font-size: 4vw;
     width: 100vw;
   }
 }

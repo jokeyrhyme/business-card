@@ -2,13 +2,36 @@
   position: relative;
 }
 
+.content {
+  margin: 1em auto;
+}
+
 .github {
   position: absolute;
   top: 0;
   right: 0;
 }
 
-.message {
-  font-family: 'Source Sans Pro', sans-serif;
-  font-size: xx-large;
+.name {
+  font-size: 200%;
+}
+
+.jobTitle {
+  font-size: 150%;
+}
+
+.orgName {
+  font-size: 175%
+}
+
+@media (orientation: portrait) {
+  .content {
+    width: 60%;
+  }
+
+  .name,
+  .jobTitle,
+  .orgName {
+    margin: 1em 0;
+  }
 }
