@@ -25,7 +25,7 @@ const App = () => (
         <h2 className={classes.jobTitle} itemProp='jobTitle'>Senior Full-Stack Software Engineer</h2>
         <div itemProp='worksFor' itemScope itemType='https://schema.org/Organization'>
           <h2 className={classes.orgName} itemProp='name'>BlinkMobile</h2>
-          <ul>
+          <ul className={classes.orgDetails}>
             <li itemProp='url'>
               <a href='http://www.blinkmobile.com.au/'>www.blinkmobile.com.au</a>
             </li>

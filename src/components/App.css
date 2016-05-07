@@ -20,6 +20,14 @@
   font-size: 150%;
 }
 
+.org {
+  text-align: right;
+}
+
+.orgDetails {
+  list-style: none;
+}
+
 .orgName {
   font-size: 175%
 }
