@@ -1,3 +1,13 @@
+.card {
+  position: relative;
+}
+
+.github {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .message {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: xx-large;
